@@ -1,0 +1,112 @@
+1.
+
+t_start = 0;
+t_end = 1.1;
+p_start = 0;
+p_end = -.5;
+v_start = -2;
+v_end = 1;
+
+1 min time.png
+minimum duration = 1.0
+t12 = 1.0
+t23 = 0.0
+t34 = 0.0
+
+t12 = 0.0
+t23 = 0.0
+t34 = 1.0
+
+1 extend1.png
+duration = 1.1
+extend the duration of the shortest motion phases
+t12 = 1.0
+t23 = 0.05
+t34 = 0.05
+
+1 extend2.png
+duration = 1.1
+extend the duration of the shortest motion phases
+t12 = 0.05
+t23 = 0.05
+t34 = 1.0
+
+1 extend3.png
+duration = 2.0
+extend the duration of the shortest motion phases
+t12 = 1.0
+t23 = 0.5
+t34 = 0.5
+
+1 extend4.png
+duration = 10.0
+extend the duration of the shortest motion phases
+t12 = 3.33
+t23 = 3.33
+t34 = 3.33
+
+1 factor1.png
+extend duration of all phases with equal factor
+duration = 1.1
+t12 = 1.1
+t23 = 0.0
+t34 = 0.0
+Discontinous velocity!
+
+t12 = 0.0
+t23 = 0.0
+t34 = 1.1
+Discontinous velocity!
+
+1 factor1.png
+extend duration of all phases with equal factor
+duration = 10
+t12 = 10.0
+t23 = 0.0
+t34 = 0.0
+Discontinous velocity!
+
+1 extend a1.png
+Extend the duration of acceleration phases first
+duration = 1.1
+t12 = 1.0
+t23 = 0.0
+t34 = 0.1
+
+1 extend a2.png
+Extend the duration of acceleration phases first
+duration = 1.1
+t12 = 0.1
+t23 = 0.0
+t34 = 1.0
+Maximum acceleration exceeded!
+
+1 extend a3.png
+Extend the duration of acceleration phases first
+duration = 10
+t12 = 3.66
+t23 = 2.66
+t34 = 3.66
+
+1 extend a4.png
+Extend the duration of acceleration phases first, 1:1:1
+duration = 100
+t12 = 33.33
+t23 = 33.33
+t34 = 33.33
+Large transient position values!
+
+1 extend a5.png
+Extend the duration of acceleration phases first,
+Limit each acceleration phase duration to 2*v_max/a_max.
+duration = 100
+t12 =  2.6667
+t23 =  94.667
+t34 =  2.6667
+
+
+
+
+
+
+
