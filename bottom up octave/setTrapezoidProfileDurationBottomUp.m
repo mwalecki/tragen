@@ -281,8 +281,12 @@ timestab(3) = t34
 
 
 % 2.2.2. Sort only acceleration phases by duration.
-[S, accintab] = sort(timestab(1:2));
-  
+%[S, accintab] = sort(timestab(1:2)); Wrong!
+if(timestab(1) > timestab(3))  
+  accintab = [3;1];
+else
+  accintab = [1;3];
+end
 
 
 % 2.2. Extend the shortest phase duration until it equals the duration of the second shortest phase or desired motion duration is achieved.

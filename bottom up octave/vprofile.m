@@ -43,7 +43,7 @@ a_max = 3;
 %v_end = 2;
 
 t_start = 0;
-t_end = 100;
+t_end = 1.1;
 p_start = 0;
 p_end = -.5;
 v_start = -2;
