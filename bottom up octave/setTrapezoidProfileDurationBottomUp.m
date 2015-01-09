@@ -58,18 +58,15 @@ end
 % 1.1. Triangular velocity profile with maximum acceleration
 disp('[info] Calculating triangular velocity profile with maximum acceleration');
 
-arr_t34 = [];
-arr_a12 = [];
 arr_idx = 0;
-
-a12=a_max
-delta = 2*v4^2 + 2*v1^2 + 4*a12*(p4-p1)
+a12=a_max;
+delta = 2*v4^2 + 2*v1^2 + 4*a12*(p4-p1);
 
 if(delta >= 0)
   sqrtDelta = sqrt(delta);
-  solution_t34 = (-2*v4 - sqrtDelta)/(2*a12)
+  solution_t34 = (-2*v4 - sqrtDelta)/(2*a12);
   if(solution_t34 >= 0)
-    solution_t12 = solution_t34 + (v4-v1)/a12
+    solution_t12 = solution_t34 + (v4-v1)/a12;
     if(solution_t12 >= 0)
       arr_idx = arr_idx+1;
       arr_a12(arr_idx) = a12;
@@ -78,9 +75,9 @@ if(delta >= 0)
       arr_t34(arr_idx) = solution_t34;
     end
   end
-  solution_t34 = (-2*v4 + sqrtDelta)/(2*a12)
+  solution_t34 = (-2*v4 + sqrtDelta)/(2*a12);
   if(solution_t34 >= 0)
-    solution_t12 = solution_t34 + (v4-v1)/a12
+    solution_t12 = solution_t34 + (v4-v1)/a12;
     if(solution_t12 >= 0)
       arr_idx = arr_idx+1;
       arr_a12(arr_idx) = a12;
@@ -91,14 +88,14 @@ if(delta >= 0)
   end
 end
 
-a12=-a_max
-delta = 2*v4^2 + 2*v1^2 + 4*a12*(p4-p1)
+a12=-a_max;
+delta = 2*v4^2 + 2*v1^2 + 4*a12*(p4-p1);
 
 if(delta >= 0)
   sqrtDelta = sqrt(delta);
-  solution_t34 = (-2*v4 - sqrtDelta)/(2*a12)
+  solution_t34 = (-2*v4 - sqrtDelta)/(2*a12);
   if(solution_t34 >= 0)
-    solution_t12 = solution_t34 + (v4-v1)/a12
+    solution_t12 = solution_t34 + (v4-v1)/a12;
     if(solution_t12 >= 0)
       arr_idx = arr_idx+1;
       arr_a12(arr_idx) = a12;
@@ -107,9 +104,9 @@ if(delta >= 0)
       arr_t34(arr_idx) = solution_t34;
     end
   end
-  solution_t34 = (-2*v4 + sqrtDelta)/(2*a12)
+  solution_t34 = (-2*v4 + sqrtDelta)/(2*a12);
   if(solution_t34 >= 0)
-    solution_t12 = solution_t34 + (v4-v1)/a12
+    solution_t12 = solution_t34 + (v4-v1)/a12;
     if(solution_t12 >= 0)
       arr_idx = arr_idx+1;
       arr_a12(arr_idx) = a12;
@@ -120,10 +117,15 @@ if(delta >= 0)
   end
 end
 
-arr_t12
-arr_a12
-arr_t34
-arr_a34
+disp('Trangular Velocity Profile solutions (t12>=0, t34>=0 only)');
+disp('t12');
+disp(arr_t12);
+disp('a12');
+disp(arr_a12);
+disp('t34');
+disp(arr_t34);
+disp('a34');
+disp(arr_a34);
 
 j=0;
 fig_id=0;
@@ -139,14 +141,12 @@ for t12=arr_t12
   p2 = p1 + (v1 + v23)*t12/2;
   p3 = p2 + v23*t23;
   p4 = p3 + (v23 + v4)*t34/2;
-  % Add a deceleration ramp at the end of the move in case following (p,v,t) fails to show up
-  v5 = 0;
-  
   t1 = 0;
   t2 = t1 + t12;
   t3 = t2 + t23;
   t4 = t3 + t34;
-  
+  % Add a deceleration ramp at the end of the move in case following (p,v,t) fails to show up
+  v5 = 0;
   if(v4 > 0)
 	  a45 = -a_max;
 	  t45 = -v4/a45;
@@ -157,15 +157,12 @@ for t12=arr_t12
 	  a45 = 0;
 	  t45 = 0;
   end
-  
   t5 = t4 + t45;
   p5 = p4 + v4*t45/2;
   
   i=1;
   for t=time
   [a, v, p] = posVelAcc(t);
-  t;
-  p;
   pos(i)=p;
   vel(i)=v;
   acc(i)=a;
@@ -174,22 +171,12 @@ for t12=arr_t12
 
   fig_id=fig_id+1;
   PVTPlot(fig_id, time, pos, vel, acc, v_max, a_max, t1, t2, t3, t4, t5);
-%  break;
-%end
-
-  v23
-  v_max
-  t4
 
 % 1.2. Trapezoidal velocity profile with maximum acceleration
 
   if((v23 > v_max) || (v23 < -v_max))
     disp('[info] v_23 exceeds v_max');
     disp('[info] Calculating trapezoidal velocity profile with velocity saturation and maximum acceleration');
-
-    v23 = v_max
-    v4
-    a34
 
     t12 = (v23-v1)/a12
     t34 = (v4-v23)/a34
@@ -234,7 +221,6 @@ for t12=arr_t12
     fig_id=fig_id+1;
     PVTPlot(fig_id, time, pos, vel, acc, v_max, a_max, t1, t2, t3, t4, t5)
   end
-%break
 
   arr_t12(j) = t12;
   arr_t23(j) = t23;
@@ -245,22 +231,30 @@ for t12=arr_t12
   arr_t14(j) = t12+t23+t34;
 end %for t12=arr_t12
 
-arr_t12
-arr_t23
-arr_t34
-arr_a12
-arr_a34
-arr_v23
-arr_t14
-
 % Sort solution arrays by the whole motion duration of each solution
 [arr_t14,I]=sort(arr_t14);
-arr_t12=arr_t12(I)
-arr_t23=arr_t23(I)
-arr_t34=arr_t34(I)
-arr_a12=arr_a12(I)
-arr_a34=arr_a34(I)
-arr_v23=arr_v23(I)
+arr_t12=arr_t12(I);
+arr_t23=arr_t23(I);
+arr_t34=arr_t34(I);
+arr_a12=arr_a12(I);
+arr_a34=arr_a34(I);
+arr_v23=arr_v23(I);
+
+disp('Trapezoidal Velocity Profile solutions, sorted by motion duration');
+disp('t12');
+disp(arr_t12);
+disp('t23');
+disp(arr_t23);
+disp('t34');
+disp(arr_t34);
+disp('a12');
+disp(arr_a12);
+disp('a34');
+disp(arr_a34);
+disp('v23');
+disp(arr_v23);
+disp('t14');
+disp(arr_t14);
 
 for j=[1:length(arr_t14)];
 
@@ -291,7 +285,7 @@ for j=[1:length(arr_t14)];
   timestab = zeros(3,1);
   timestab(1) = t12;
   timestab(2) = t23;
-  timestab(3) = t34
+  timestab(3) = t34;
 
   % 2.1.1. Sort all three phases by duration.
   [S, indextab] = sort(timestab);
@@ -312,9 +306,15 @@ for j=[1:length(arr_t14)];
   end
 
 
+
+disp(timestab);
+t12
+t23
+t34
+
   % 2.2. Extend the shortest phase duration until it equals the duration of the second shortest phase or desired motion duration is achieved.
 
-  method = 4
+  method = 4;
 
   switch(method)
     case 1
@@ -395,7 +395,10 @@ for j=[1:length(arr_t14)];
       [S, indextab] = sort(timestab);
       % Try to extend all phases evenly until t12==t23==t34==2*v_max/a_max
       temp_ph_dur=2*v_max/a_max;
-      if((3*temp_ph_dur < duration) && (t12+t23+t34 < 3*temp_ph_dur))
+      if(3*temp_ph_dur > duration)
+        temp_ph_dur = duration/3;
+      end
+      if(t12+t23+t34 < 3*temp_ph_dur)
         if((3*timestab(indextab(3))) <= 3*temp_ph_dur)
           timestab(1) = temp_ph_dur;
           timestab(2) = temp_ph_dur;
@@ -415,20 +418,19 @@ for j=[1:length(arr_t14)];
       if(t12+t23+t34 < duration)
         t23 = duration - (t12 + t34);
       end
-      t12
-      t23
-      t34
     case 5
       % 2.2.3 Scale all phase durations with the same factor
       fct = duration/(t12 + t23 + t34)
-      t12 = fct * t12
-      t23 = fct * t23
-      t34 = fct * t34
+      t12 = fct * t12;
+      t23 = fct * t23;
+      t34 = fct * t34;
   end
 
 
-
-
+disp(timestab);
+t12
+t23
+t34
 
   t1 = 0;
   t2 = t1 + t12;
@@ -443,7 +445,7 @@ for j=[1:length(arr_t14)];
     return;
   end
 
-  v23 = (2*(p4-p1) - v1*t12 - v4*t34) / (t12 + 2*t23 + t34)
+  v23 = (2*(p4-p1) - v1*t12 - v4*t34) / (t12 + 2*t23 + t34);
 
   if(t12 > 0)
     a12 = (v23-v1)/t12;
@@ -456,6 +458,9 @@ for j=[1:length(arr_t14)];
   else
     a34 = 0;
   end
+  
+  disp('   t12       t23       t34       a12       a34       v23');
+  disp([t12 t23 t34 a12 a34 v23]);
   
   % If the conditions are met, this is the proper solution.
   % Otherwise, continue with subsequent solutions.
@@ -494,7 +499,7 @@ for j=[1:length(arr_t14)];
     i = i+1;
     end
     fig_id=fig_id+1;
-    PVTPlot(fig_id, time, pos, vel, acc, v_max, a_max, t1, t2, t3, t4, t5)
+    PVTPlot(fig_id, time, pos, vel, acc, v_max, a_max, t1, t2, t3, t4, t5);
   end
 end%for j=[1:length(arr_t14)];
 
@@ -532,7 +537,7 @@ i = i+1;
 end
 
 fig_id=fig_id+1;
-PVTPlot(fig_id, time, pos, vel, acc, v_max, a_max, t1, t2, t3, t4, t5)
+PVTPlot(fig_id, time, pos, vel, acc, v_max, a_max, t1, t2, t3, t4, t5);
 
 
 % Add a deceleration ramp at the end of the move in case following (p,v,t) fails to show up
