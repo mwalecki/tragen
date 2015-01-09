@@ -36,11 +36,11 @@ v_max = 4;
 a_max = 3;
 
 t_start = 0;
-t_end = 2;
+t_end = 5.4;
 p_start = 0;
 p_end = 0;
-v_start = 2;
-v_end = 2;
+v_start = 4;
+v_end = 4;
 
 %t_start = 0;
 %t_end = 1.1;

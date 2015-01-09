@@ -28,7 +28,7 @@ global v5
 
 
 % Prepare data for debug plots
-time = [0:.01:1.4*duration];
+time = [0:.01:2.4*duration];
 pos = zeros(1,length(time));
 vel = zeros(1,length(time));
 acc = zeros(1,length(time));
@@ -268,199 +268,190 @@ for j=[1:length(arr_t14)];
 
   if(t14 == duration)
     disp('[info] Motion will be executed with desired duration, equal to minimum possible time.');
-    return;
-  end
-
-  if(t14 > duration)
+    t1 = 0;
+    t2 = t1 + t12;
+    t3 = t2 + t23;
+    t4 = t3 + t34;
+  elseif(t14 > duration)
     disp('[info] Motion will be executed at minimum possible time, greater than desired.');
-    return;
-  end
+    t1 = 0;
+    t2 = t1 + t12;
+    t3 = t2 + t23;
+    t4 = t3 + t34;
+  else % if(t14 < duration)
+    disp('[info] Desired motion duration will be longer than minimum possible time');
 
-  disp('[info] Desired motion duration will be longer than minimum possible time');
+    % 2. Desired motion duration is greater than calculated minimum time.
+    % 2.1. Sort the motion phases due to their duration.
 
-  % 2. Desired motion duration is greater than calculated minimum time.
-  % 2.1. Sort the motion phases due to their duration.
+    % Timestab contains duration of motion phases.
+    timestab = zeros(3,1);
+    timestab(1) = t12;
+    timestab(2) = t23;
+    timestab(3) = t34;
 
-  % Timestab contains duration of motion phases.
-  timestab = zeros(3,1);
-  timestab(1) = t12;
-  timestab(2) = t23;
-  timestab(3) = t34;
+    % 2.1.1. Sort all three phases by duration.
+    [S, indextab] = sort(timestab);
 
-  % 2.1.1. Sort all three phases by duration.
-  [S, indextab] = sort(timestab);
-
-  % indextab contains indexes of motion phases, sorted by duration.
-  % index 1: t12
-  % index 2: t23
-  % index 3: t34
-  %indextab
-
-
-  % 2.2.2. Sort only acceleration phases by duration.
-  %[S, accintab] = sort(timestab(1:2)); Wrong!
-  if(timestab(1) > timestab(3))  
-    accintab = [3;1];
-  else
-    accintab = [1;3];
-  end
+    % indextab contains indexes of motion phases, sorted by duration.
+    % index 1: t12
+    % index 2: t23
+    % index 3: t34
+    %indextab
 
 
+    % 2.2.2. Sort only acceleration phases by duration.
+    %[S, accintab] = sort(timestab(1:2)); Wrong!
+    if(timestab(1) > timestab(3))  
+      accintab = [3;1];
+    else
+      accintab = [1;3];
+    end
 
-disp(timestab);
-t12
-t23
-t34
+    % 2.2. Extend the shortest phase duration until it equals the duration of the second shortest phase or desired motion duration is achieved.
 
-  % 2.2. Extend the shortest phase duration until it equals the duration of the second shortest phase or desired motion duration is achieved.
+    method = 4;
 
-  method = 4;
-
-  switch(method)
-    case 1
-      % 2.2.1 Extend evenly (for 1:1:1 phase duration proportions)
-      if((3*timestab(indextab(3))) <= duration)
-        timestab(1) = duration/3;
-        timestab(2) = duration/3;
-        timestab(3) = duration/3;
-      elseif((timestab(indextab(3)) + 2*timestab(indextab(2))) <= duration)
-        timestab(indextab(1)) = (duration - timestab(indextab(3)))/2;
-        timestab(indextab(2)) = (duration - timestab(indextab(3)))/2;
-      else
-        timestab(indextab(1)) = (duration - (timestab(indextab(2)) + timestab(indextab(3))));
-      end
-      % Common for extend methods - set the calculated times.
-      t12 = timestab(1)
-      t23 = timestab(2)
-      t34 = timestab(3)
-      
-    case 2
-      % 2.2.2 Extend acceleration phases first - 
-      % t12 and t34 must not be 0 for equation (2.3.1) to comply with v1 and v4 values.
-      % When t12==t34, increase all phases with the same component.
-      if(2*timestab(accintab(2)) + timestab(2) <= duration)
-        timestab(accintab(1)) = timestab(accintab(2));
-        cmp = (duration - (timestab(accintab(1)) + timestab(accintab(2)) + timestab(2))) / 3;
-        timestab(1) = timestab(1) + cmp;
-        timestab(2) = timestab(2) + cmp;
-        timestab(3) = timestab(3) + cmp;
-      else
-        timestab(accintab(1)) = duration - (timestab(accintab(2)) + timestab(2));
-      end
-      % Common for extend methods - set the calculated times.
-      t12 = timestab(1)
-      t23 = timestab(2)
-      t34 = timestab(3)
-      
-    case 3
-      % 2.2.3 Extend acceleration phases first - 
-      % t12 and t34 must not be 0 for equation (2.3.1) to comply with v1 and v4 values.
-      % Try to achieve t12==t23==t34.
-      % First achieve t12==t34.
-      if(2*timestab(accintab(2)) + timestab(2) <= duration)
-        timestab(accintab(1)) = timestab(accintab(2));
-      else
-        timestab(accintab(1)) = duration - (timestab(accintab(2)) + timestab(2));
-      end
-      % Then extend all phases evenly
-      % indextab needs update.
-      [S, indextab] = sort(timestab);
-      if((3*timestab(indextab(3))) <= duration)
-        timestab(1) = duration/3;
-        timestab(2) = duration/3;
-        timestab(3) = duration/3;
-      elseif((timestab(indextab(3)) + 2*timestab(indextab(2))) <= duration)
-        timestab(indextab(1)) = (duration - timestab(indextab(3)))/2;
-        timestab(indextab(2)) = (duration - timestab(indextab(3)))/2;
-      else
-        timestab(indextab(1)) = (duration - (timestab(indextab(2)) + timestab(indextab(3))));
-      end
-      % Common for extend methods - set the calculated times.
-      t12 = timestab(1)
-      t23 = timestab(2)
-      t34 = timestab(3)
-      
-    case 4
-      % 2.2.4 Extend acceleration phases first - 
-      % t12 and t34 must not be 0 for equation (2.3.1) to comply with v1 and v4 values.
-      % Try to achieve t12==t23==t34 until t12==t34==2*v_max/a_max. Then increase only t23.
-      % First achieve t12==t34.
-      if(2*timestab(accintab(2)) + timestab(2) <= duration)
-        timestab(accintab(1)) = timestab(accintab(2));
-      else
-        timestab(accintab(1)) = duration - (timestab(accintab(2)) + timestab(2));
-      end
-      % At this point either t12==t34 or sum t12+t23+t34==duration.
-      % indextab needs update - sort all phases by duration.
-      [S, indextab] = sort(timestab);
-      % Try to extend all phases evenly until t12==t23==t34==2*v_max/a_max
-      temp_ph_dur=2*v_max/a_max;
-      if(3*temp_ph_dur > duration)
-        temp_ph_dur = duration/3;
-      end
-      if(t12+t23+t34 < 3*temp_ph_dur)
-        if((3*timestab(indextab(3))) <= 3*temp_ph_dur)
-          timestab(1) = temp_ph_dur;
-          timestab(2) = temp_ph_dur;
-          timestab(3) = temp_ph_dur;
-        elseif((timestab(indextab(3)) + 2*timestab(indextab(2))) <= 3*temp_ph_dur)
-          timestab(indextab(1)) = (3*temp_ph_dur - timestab(indextab(3)))/2;
-          timestab(indextab(2)) = (3*temp_ph_dur - timestab(indextab(3)))/2;
+    switch(method)
+      case 1
+        % 2.2.1 Extend evenly (for 1:1:1 phase duration proportions)
+        if((3*timestab(indextab(3))) <= duration)
+          timestab(1) = duration/3;
+          timestab(2) = duration/3;
+          timestab(3) = duration/3;
+        elseif((timestab(indextab(3)) + 2*timestab(indextab(2))) <= duration)
+          timestab(indextab(1)) = (duration - timestab(indextab(3)))/2;
+          timestab(indextab(2)) = (duration - timestab(indextab(3)))/2;
         else
-          timestab(indextab(1)) = (3*temp_ph_dur - (timestab(indextab(2)) + timestab(indextab(3))));
+          timestab(indextab(1)) = (duration - (timestab(indextab(2)) + timestab(indextab(3))));
         end
-      end
-      % Common for extend methods - set the calculated times.
-      t12 = timestab(1);
-      t23 = timestab(2);
-      t34 = timestab(3);
-      % Then increase only t23.
-      if(t12+t23+t34 < duration)
-        t23 = duration - (t12 + t34);
-      end
-    case 5
-      % 2.2.3 Scale all phase durations with the same factor
-      fct = duration/(t12 + t23 + t34)
-      t12 = fct * t12;
-      t23 = fct * t23;
-      t34 = fct * t34;
-  end
+        % Common for extend methods - set the calculated times.
+        t12 = timestab(1)
+        t23 = timestab(2)
+        t34 = timestab(3)
+        
+      case 2
+        % 2.2.2 Extend acceleration phases first - 
+        % t12 and t34 must not be 0 for equation (2.3.1) to comply with v1 and v4 values.
+        % When t12==t34, increase all phases with the same component.
+        if(2*timestab(accintab(2)) + timestab(2) <= duration)
+          timestab(accintab(1)) = timestab(accintab(2));
+          cmp = (duration - (timestab(accintab(1)) + timestab(accintab(2)) + timestab(2))) / 3;
+          timestab(1) = timestab(1) + cmp;
+          timestab(2) = timestab(2) + cmp;
+          timestab(3) = timestab(3) + cmp;
+        else
+          timestab(accintab(1)) = duration - (timestab(accintab(2)) + timestab(2));
+        end
+        % Common for extend methods - set the calculated times.
+        t12 = timestab(1)
+        t23 = timestab(2)
+        t34 = timestab(3)
+        
+      case 3
+        % 2.2.3 Extend acceleration phases first - 
+        % t12 and t34 must not be 0 for equation (2.3.1) to comply with v1 and v4 values.
+        % Try to achieve t12==t23==t34.
+        % First achieve t12==t34.
+        if(2*timestab(accintab(2)) + timestab(2) <= duration)
+          timestab(accintab(1)) = timestab(accintab(2));
+        else
+          timestab(accintab(1)) = duration - (timestab(accintab(2)) + timestab(2));
+        end
+        % Then extend all phases evenly
+        % indextab needs update.
+        [S, indextab] = sort(timestab);
+        if((3*timestab(indextab(3))) <= duration)
+          timestab(1) = duration/3;
+          timestab(2) = duration/3;
+          timestab(3) = duration/3;
+        elseif((timestab(indextab(3)) + 2*timestab(indextab(2))) <= duration)
+          timestab(indextab(1)) = (duration - timestab(indextab(3)))/2;
+          timestab(indextab(2)) = (duration - timestab(indextab(3)))/2;
+        else
+          timestab(indextab(1)) = (duration - (timestab(indextab(2)) + timestab(indextab(3))));
+        end
+        % Common for extend methods - set the calculated times.
+        t12 = timestab(1)
+        t23 = timestab(2)
+        t34 = timestab(3)
+        
+      case 4
+        % 2.2.4 Extend acceleration phases first - 
+        % t12 and t34 must not be 0 for equation (2.3.1) to comply with v1 and v4 values.
+        % Try to achieve t12==t23==t34 until t12==t34==2*v_max/a_max. Then increase only t23.
+        % First achieve t12==t34.
+        if(2*timestab(accintab(2)) + timestab(2) <= duration)
+          timestab(accintab(1)) = timestab(accintab(2));
+        else
+          timestab(accintab(1)) = duration - (timestab(accintab(2)) + timestab(2));
+        end
+        % At this point either t12==t34 or sum t12+t23+t34==duration.
+        % indextab needs update - sort all phases by duration.
+        [S, indextab] = sort(timestab);
+        % Try to extend all phases evenly until t12==t23==t34==2*v_max/a_max
+        temp_ph_dur=2*v_max/a_max;
+        if(3*temp_ph_dur > duration)
+          temp_ph_dur = duration/3;
+        end
+        if(t12+t23+t34 < 3*temp_ph_dur)
+          if((3*timestab(indextab(3))) <= 3*temp_ph_dur)
+            timestab(1) = temp_ph_dur;
+            timestab(2) = temp_ph_dur;
+            timestab(3) = temp_ph_dur;
+          elseif((timestab(indextab(3)) + 2*timestab(indextab(2))) <= 3*temp_ph_dur)
+            timestab(indextab(1)) = (3*temp_ph_dur - timestab(indextab(3)))/2;
+            timestab(indextab(2)) = (3*temp_ph_dur - timestab(indextab(3)))/2;
+          else
+            timestab(indextab(1)) = (3*temp_ph_dur - (timestab(indextab(2)) + timestab(indextab(3))));
+          end
+        end
+        % Common for extend methods - set the calculated times.
+        t12 = timestab(1);
+        t23 = timestab(2);
+        t34 = timestab(3);
+        % Then increase only t23.
+        if(t12+t23+t34 < duration)
+          t23 = duration - (t12 + t34);
+        end
+      case 5
+        % 2.2.3 Scale all phase durations with the same factor
+        fct = duration/(t12 + t23 + t34)
+        t12 = fct * t12;
+        t23 = fct * t23;
+        t34 = fct * t34;
+    end
+
+    t1 = 0;
+    t2 = t1 + t12;
+    t3 = t2 + t23;
+    t4 = t3 + t34;
 
 
-disp(timestab);
-t12
-t23
-t34
+    % 2.3. Given the time of each phase, calculate the trapezoidal velocity profile.
 
-  t1 = 0;
-  t2 = t1 + t12;
-  t3 = t2 + t23;
-  t4 = t3 + t34;
+    if((t12 + 2*t23 + t34) == 0)
+      disp('[error] Duration shouldn`t be 0');
+      return;
+    end
 
+    v23 = (2*(p4-p1) - v1*t12 - v4*t34) / (t12 + 2*t23 + t34);
 
-  % 2.3. Given the time of each phase, calculate the trapezoidal velocity profile.
+    if(t12 > 0)
+      a12 = (v23-v1)/t12;
+    else
+      a12 = 0;
+    end
 
-  if((t12 + 2*t23 + t34) == 0)
-    disp('[error] Duration shouldn`t be 0');
-    return;
-  end
-
-  v23 = (2*(p4-p1) - v1*t12 - v4*t34) / (t12 + 2*t23 + t34);
-
-  if(t12 > 0)
-    a12 = (v23-v1)/t12;
-  else
-    a12 = 0;
-  end
-
-  if(t34 > 0)
-    a34 = (v4-v23)/t34;
-  else
-    a34 = 0;
-  end
+    if(t34 > 0)
+      a34 = (v4-v23)/t34;
+    else
+      a34 = 0;
+    end
+  end % if(t14 < duration)
   
-  disp('   t12       t23       t34       a12       a34       v23');
-  disp([t12 t23 t34 a12 a34 v23]);
+  disp('   t4       t12       t23       t34       a12       a34       v23');
+  disp([t4 t12 t23 t34 a12 a34 v23]);
   
   % If the conditions are met, this is the proper solution.
   % Otherwise, continue with subsequent solutions.
