@@ -1,5 +1,5 @@
 function y=PVTPlot(fig_id, time, pos, vel, acc, v_max, a_max, t1, t2, t3, t4, t5)
-  figure(j);
+  figure(fig_id);
   subplot(3,1,1);
   plot([t2, t2], 1.1*[min(pos), max(pos)], 'g', [t3, t3], 1.1*[min(pos), max(pos)], 'g', [t4, t4], 1.1*[min(pos), max(pos)], 'g', [t5, t5], 1.1*[min(pos), max(pos)], 'g');
   hold on
