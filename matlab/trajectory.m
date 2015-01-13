@@ -96,11 +96,12 @@ classdef trajectory < handle
                 p = obj.p5;
             end
         end
-        function success = calculate(obj, p_start, v_start, p_end, v_end, duration)
+        function [success, proper_duration] = calculate(obj, p_start, v_start, p_end, v_end, duration)
             % success = calculate(obj, p_start, v_start, p_end, v_end, duration)
             %
             
             success = 0;
+            proper_duration = 0;
             
             if(obj.draw_plots)
                 % Prepare data for debug plots
@@ -639,6 +640,7 @@ classdef trajectory < handle
             if(success == 0)
                 warning('No proper solution found. Calculated values may exceed motion limits.')
             end
+            proper_duration = obj.t4 - obj.t1;
         end
     end
 end
