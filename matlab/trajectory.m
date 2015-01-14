@@ -164,13 +164,17 @@ classdef trajectory < handle
                     obj.v4 = v_end;
                     obj.p4 = p_end;
                 end
+            else
+                obj.v4 = v_end;
+                obj.p4 = p_end;
             end
+            
             if(obj.v4 > obj.v_max)
               obj.v4 = obj.v_max;
             elseif(obj.v4 < -obj.v_max)
               obj.v4 = -obj.v_max;
             end
-
+            
             % 1. Minimum time calculation
             % 1.1. Triangular velocity profile with maximum acceleration
             if(obj.verbose)
@@ -284,13 +288,12 @@ classdef trajectory < handle
               if(obj.draw_plots)
                   i=1;
                   for t=time
-                  [a, v, p] = obj.posVelAcc(t);
-                  pos(i)=p;
-                  vel(i)=v;
-                  acc(i)=a;
-                  i = i+1;
+                      [a, v, p] = obj.posVelAcc(t);
+                      pos(i)=p;
+                      vel(i)=v;
+                      acc(i)=a;
+                      i = i+1;
                   end
-
                   fig_id=fig_id+1;
                   PVTPlot(fig_id, time, pos, vel, acc, obj.v_max, obj.a_max, obj.t1, obj.t2, obj.t3, obj.t4, obj.t5);
               end
@@ -302,10 +305,16 @@ classdef trajectory < handle
                     disp('[info] v_23 exceeds obj.v_max');
                     disp('[info] Calculating trapezoidal velocity profile with velocity saturation and maximum acceleration');
                 end
+                
+                if(obj.v23 > obj.v_max)
+                    obj.v23 = obj.v_max;
+                else
+                    obj.v23 = -obj.v_max;
+                end
 
-                t12 = (obj.v23-obj.v1)/obj.a12
-                t34 = (obj.v4-obj.v23)/obj.a34
-                t23 = (obj.p4 - (obj.p1 + (obj.v1+obj.v23)*t12/2 + (obj.v23+obj.v4)*t34/2))/obj.v23
+                t12 = (obj.v23-obj.v1)/obj.a12;
+                t34 = (obj.v4-obj.v23)/obj.a34;
+                t23 = (obj.p4 - (obj.p1 + (obj.v1+obj.v23)*t12/2 + (obj.v23+obj.v4)*t34/2))/obj.v23;
 
                 obj.p2 = obj.p1 + (obj.v1 + obj.v23)*t12/2;
                 obj.p3 = obj.p2 + obj.v23*t23;
@@ -335,13 +344,13 @@ classdef trajectory < handle
                 if(obj.draw_plots)
                     i=1;
                     for t=time
-                    [a, v, p] = obj.posVelAcc(t);
-                    t;
-                    p;
-                    pos(i)=p;
-                    vel(i)=v;
-                    acc(i)=a;
-                    i = i+1;
+                        [a, v, p] = obj.posVelAcc(t);
+                        t;
+                        p;
+                        pos(i)=p;
+                        vel(i)=v;
+                        acc(i)=a;
+                        i = i+1;
                     end
 
                     fig_id=fig_id+1;

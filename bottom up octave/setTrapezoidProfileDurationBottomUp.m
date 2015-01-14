@@ -37,12 +37,17 @@ acc = zeros(1,length(time));
 % Assure motion limits
 v1 = v_start;
 p1 = p_start;
-if(p_end > p_max)
-	v4 = 0;
-	p4 = p_max;
-elseif(p_end < p_min)
-	v4 = 0;
-	p4 = p_min;
+if(p_max > p_min)
+  if(p_end > p_max)
+	  v4 = 0;
+	  p4 = p_max;
+  elseif(p_end < p_min)
+	  v4 = 0;
+	  p4 = p_min;
+  else
+	  v4 = v_end;
+	  p4 = p_end;
+  end
 else
 	v4 = v_end;
 	p4 = p_end;
@@ -178,6 +183,12 @@ for t12=arr_t12
     disp('[info] v_23 exceeds v_max');
     disp('[info] Calculating trapezoidal velocity profile with velocity saturation and maximum acceleration');
 
+    if(v23 > v_max)
+      v23 = v_max;
+    else
+      v23 = -v_max;
+    end
+                
     t12 = (v23-v1)/a12
     t34 = (v4-v23)/a34
     t23 = (p4 - (p1 + (v1+v23)*t12/2 + (v23+v4)*t34/2))/v23
