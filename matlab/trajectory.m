@@ -96,6 +96,44 @@ classdef trajectory < handle
                 p = obj.p5;
             end
         end
+        function plot(obj)
+        % plot()
+        % plot(t_end)
+        % plot(t_start, t_end)
+        %
+            switch(nargin)
+                case 1
+                    time = 0:0.025:1.2*obj.t5;
+                case 2
+                    if(varargin(2) > 0)
+                        time = 0:0.025:varargin(2);
+                    else
+                        error('t_end must be > 0')
+                    end
+                case 3
+                    if(varargin(2) > 0 && varargin(3) > 0 && varargin(2) < varargin(3))
+                        time = vargin(2):0.025:varargin(3);
+                    else
+                        error('t_start and t_end must be > 0 and t_start must be < t_end')
+                    end
+                otherwise
+                    error('Improper argument number. Use: plot(), plot(t_end) or plot(t_start, t_end)')
+            end
+            
+            i=1;
+            pos(length(time)) = 0;
+            vel = pos;
+            acc = pos;
+            for t=time
+                [a, v, p] = obj.posVelAcc(t);
+                pos(i)=p;
+                vel(i)=v;
+                acc(i)=a;
+                i = i+1;
+            end
+
+            PVTPlot(0, time, pos, vel, acc, obj.v_max, obj.a_max, obj.t1, obj.t2, obj.t3, obj.t4, obj.t5);
+        end
         function [success, proper_duration] = calculate(obj, p_start, v_start, p_end, v_end, duration)
             % success = calculate(obj, p_start, v_start, p_end, v_end, duration)
             %
