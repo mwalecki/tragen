@@ -49,6 +49,15 @@ v_end = 4;
 %v_start = 2;
 %v_end = -1;
 
+t_start = 0;
+t_end = 4;
+p_start = 4;
+p_end = 0;
+v_start = 4;
+v_end = 4;
+
+%([4 6], [4 2], [0 .5], [4 -1], .5) % success!
+
 setTrapezoidProfileDurationBottomUp(p_start, v_start, p_end, v_end, t_end)
 
 %time = [0:.025:(t5+.5)];

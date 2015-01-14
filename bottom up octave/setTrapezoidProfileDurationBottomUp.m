@@ -189,9 +189,9 @@ for t12=arr_t12
       v23 = -v_max;
     end
                 
-    t12 = (v23-v1)/a12
-    t34 = (v4-v23)/a34
-    t23 = (p4 - (p1 + (v1+v23)*t12/2 + (v23+v4)*t34/2))/v23
+    t12 = (v23-v1)/a12;
+    t34 = (v4-v23)/a34;
+    t23 = (p4 - (p1 + (v1+v23)*t12/2 + (v23+v4)*t34/2))/v23;
 
     p2 = p1 + (v1 + v23)*t12/2;
     p3 = p2 + v23*t23;
@@ -221,8 +221,6 @@ for t12=arr_t12
     i=1;
     for t=time
     [a, v, p] = posVelAcc(t);
-    t;
-    p;
     pos(i)=p;
     vel(i)=v;
     acc(i)=a;
@@ -230,7 +228,7 @@ for t12=arr_t12
     end
     
     fig_id=fig_id+1;
-    PVTPlot(fig_id, time, pos, vel, acc, v_max, a_max, t1, t2, t3, t4, t5)
+    PVTPlot(fig_id, time, pos, vel, acc, v_max, a_max, t1, t2, t3, t4, t5);
   end
 
   arr_t12(j) = t12;
