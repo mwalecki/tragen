@@ -139,7 +139,7 @@ classdef multiJointTrajectory < handle
                     i = i+1;
                 end
                 figure
-                PVTPlot(0, time, pos, vel, acc, obj.v_max, obj.a_max, obj.t1, obj.t2, obj.t3, obj.t4, obj.t5);
+                PVTPlot(0, time, pos, vel, acc, obj.traj(traj_plot).v_max, obj.traj(traj_plot).a_max, obj.traj(traj_plot).t1, obj.traj(traj_plot).t2, obj.traj(traj_plot).t3, obj.traj(traj_plot).t4, obj.traj(traj_plot).t5);
             end
         end
     end
