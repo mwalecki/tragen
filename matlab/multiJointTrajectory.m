@@ -83,6 +83,65 @@ classdef multiJointTrajectory < handle
                 error('Duration must be of size 1 or a vector of length of joints number.')
             end
         end
+        function plot(obj)
+        % plot()
+        % plot(trajectories)
+        % plot(trajectories, t_end)
+        % plot(trajectories, t_start, t_end)
+        %
+        
+        % TODO: Work with trajecotry.plot()
+            switch(nargin)
+                case 1
+                    trajectories = 1:obj.n_traj;
+                    time = 0:0.025:1.2*max(obj.traj.t5);
+                case 2
+                    trajectories = vargin(2);
+                    if(trajectories == [])
+                        trajectories = 1:obj.n_traj;
+                    end
+                    time = 0:0.025:1.2*max(obj.traj(trajectories).t5);
+                case 3
+                    trajectories = vargin(2);
+                    if(trajectories == [])
+                        trajectories = 1:obj.n_traj;
+                    end
+                    if(varargin(3) > 0)
+                        time = 0:0.025:varargin(3);
+                    else
+                        error('t_end must be > 0')
+                    end
+                case 4
+                    trajectories = vargin(2);
+                    if(trajectories == [])
+                        trajectories = 1:obj.n_traj;
+                    end
+                    if(varargin(3) > 0 && varargin(4) > 0 && varargin(3) < varargin(4))
+                        time = vargin(3):0.025:varargin(4);
+                    else
+                        error('t_start and t_end must be > 0 and t_start must be < t_end')
+                    end
+                otherwise
+                    error('Improper argument number. Use: plot(), plot(trajectories), plot(trajectories, t_end) or plot(trajectories, t_start, t_end)')
+            end
+            
+            close all
+            for traj_plot = trajectories
+                i=1;
+                pos(length(time)) = 0;
+                vel = pos;
+                acc = pos;
+                for t=time
+                    [a, v, p] = obj.traj(traj_plot).posVelAcc(t);
+                    pos(i)=p;
+                    vel(i)=v;
+                    acc(i)=a;
+                    i = i+1;
+                end
+                figure
+                PVTPlot(0, time, pos, vel, acc, obj.v_max, obj.a_max, obj.t1, obj.t2, obj.t3, obj.t4, obj.t5);
+            end
+        end
     end
 end
 
