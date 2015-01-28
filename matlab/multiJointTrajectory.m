@@ -83,7 +83,18 @@ classdef multiJointTrajectory < handle
                 error('Duration must be of size 1 or a vector of length of joints number.')
             end
         end
-        function plot(obj)
+        function [acc, vel, pos] = avp(obj, t)
+            acc(obj.n_traj) = 0;
+            vel(obj.n_traj) = 0;
+            pos(obj.n_traj) = 0;
+            for traj_no = 1:obj.n_traj
+                [a, v, p] = obj.traj(traj_no).posVelAcc(t);
+                pos(traj_no)=p;
+                vel(traj_no)=v;
+                acc(traj_no)=a;
+            end
+        end
+        function plot(obj, varargin)
         % plot()
         % plot(trajectories)
         % plot(trajectories, t_end)
@@ -91,33 +102,36 @@ classdef multiJointTrajectory < handle
         %
         
         % TODO: Work with trajecotry.plot()
+            for traj_no = 1:obj.n_traj
+                t5s(traj_no) = obj.traj(traj_no).t5;
+            end
             switch(nargin)
                 case 1
                     trajectories = 1:obj.n_traj;
-                    time = 0:0.025:1.2*max(obj.traj.t5);
+                    time = 0:0.025:1.2*max(t5s);
                 case 2
-                    trajectories = vargin(2);
+                    trajectories = varargin{1};
                     if(trajectories == [])
                         trajectories = 1:obj.n_traj;
                     end
-                    time = 0:0.025:1.2*max(obj.traj(trajectories).t5);
+                    time = 0:0.025:1.2*max(t5s(trajectories));
                 case 3
-                    trajectories = vargin(2);
-                    if(trajectories == [])
+                    trajectories = varargin{1};
+                    if(isempty(trajectories))
                         trajectories = 1:obj.n_traj;
                     end
-                    if(varargin(3) > 0)
-                        time = 0:0.025:varargin(3);
+                    if(varargin{2} > 0)
+                        time = 0:0.025:varargin{2};
                     else
                         error('t_end must be > 0')
                     end
                 case 4
-                    trajectories = vargin(2);
+                    trajectories = varargin{1};
                     if(trajectories == [])
                         trajectories = 1:obj.n_traj;
                     end
-                    if(varargin(3) > 0 && varargin(4) > 0 && varargin(3) < varargin(4))
-                        time = vargin(3):0.025:varargin(4);
+                    if(varargin{2} > 0 && varargin{3} > 0 && varargin{2} < varargin{3})
+                        time = vargin(3):0.025:varargin{4};
                     else
                         error('t_start and t_end must be > 0 and t_start must be < t_end')
                     end
