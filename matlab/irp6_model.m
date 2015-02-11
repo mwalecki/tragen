@@ -77,6 +77,7 @@ classdef irp6_model < handle
         function plot(obj,t)
             % Plot the plot
             obj.robot.plot(obj.read_q(t));
+            %obj.robot.plot(obj.read_q(t), 'view', [pi/2, pi/4]);
         end
     end
     

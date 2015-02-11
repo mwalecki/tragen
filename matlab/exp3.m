@@ -27,7 +27,7 @@ for t= 0:step_duration:7
     
     % Robot trajectory calculation
     if(mod(t, horizon) == 0)
-        q_d = irp.robot.ikine(ball.T_0_G(t+horizon) * T_G_T, irp.read_q(t))
+        q_d = irp.robot.ikine(ball.T_0_G(t+horizon) * T_G_T, irp.read_q(t));
         J0 = irp.robot.jacob0(q_d);
         qd_d = inv(J0) * ball.V(t+horizon);
         

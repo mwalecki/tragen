@@ -96,7 +96,7 @@ classdef trajectory < handle
                 p = obj.p5;
             end
         end
-        function plot(obj)
+        function plot(obj, varargin)
         % plot()
         % plot(t_end)
         % plot(t_start, t_end)
@@ -105,14 +105,14 @@ classdef trajectory < handle
                 case 1
                     time = 0:0.025:1.2*obj.t5;
                 case 2
-                    if(varargin(2) > 0)
-                        time = 0:0.025:varargin(2);
+                    if(varargin{1} > 0)
+                        time = 0:0.025:varargin{1};
                     else
                         error('t_end must be > 0')
                     end
                 case 3
-                    if(varargin(2) > 0 && varargin(3) > 0 && varargin(2) < varargin(3))
-                        time = vargin(2):0.025:varargin(3);
+                    if(varargin{1} > 0 && varargin{2} > 0 && varargin{1} < varargin{2})
+                        time = varargin{1}:0.025:varargin{2};
                     else
                         error('t_start and t_end must be > 0 and t_start must be < t_end')
                     end
